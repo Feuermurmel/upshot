@@ -1,11 +1,10 @@
-import os, markdown
+import os, markdown, pystache
 from . import util, js, easyxml, assets
 from .easyxml.namespaces import xhtml
 
 
 katex = js.compile_from_resource('katex.js')
-handlebars = js.compile_from_resource('handlebars.js')
-slideshow_template = util.get_resource('slideshow.handlebars').decode()
+slideshow_template = util.get_resource('slideshow.mustache').decode()
 
 assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
 
@@ -37,7 +36,7 @@ class Slideshow:
 		context = dict(headers = easyxml.dump_fragment(headers), slides = slide_contexts)
 		
 		# To remove redundant namespace declarations.
-		document = easyxml.dump(easyxml.load(handlebars(slideshow_template, context)))
+		document = easyxml.dump(easyxml.load(pystache.Renderer().render(slideshow_template, context)))
 		
 		files.append(assets.create_bytes_file('index.xhtml', lambda: document.encode()))
 		

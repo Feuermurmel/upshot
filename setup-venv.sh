@@ -14,6 +14,3 @@ python setup.py develop
 pip install pytest
 nodeenv -p --prebuilt
 npm install -g katex
-npm install -g handlebars
-npm install -g less
-npm install -g deasync

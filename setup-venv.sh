@@ -12,5 +12,7 @@ virtualenv -p python3 "$VENV_PATH"
 
 python setup.py develop
 pip install pytest
+
+pip install nodeenv
 nodeenv -p --prebuilt
 npm install -g katex

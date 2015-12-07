@@ -5,12 +5,16 @@
 	<head>
 		<title>Slide Shows in XHTML</title>
 		{{{headers}}}
+		<script type="text/javascript"><![CDATA[
+			$(upshot);
+		]]></script>
 	</head>
 	<body>
 		{{#slides}}
-		<div class="slide">
-			<p>{{{content}}}</p>
-		</div>
+			<div class="toc">
+				{{>toc_node}}
+			</div>
+			{{>slide_node}}
 		{{/slides}}
 	</body>
 </html>

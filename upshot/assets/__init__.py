@@ -144,6 +144,6 @@ class PygmentsAssetFactory(AssetFactory):
 		return io.BytesIO(content.encode())
 
 
-slidy = ResourceAssetFactory('slidy')
+upshot = ResourceAssetFactory('upshot')
 katex = ResourceAssetFactory('katex')
 pygments = PygmentsAssetFactory()

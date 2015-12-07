@@ -1,13 +1,26 @@
-import os, markdown, pystache
+import os, markdown, pystache, collections, itertools
 from . import util, js, easyxml, assets
 from .easyxml.namespaces import xhtml
 
 
 katex = js.compile_from_resource('katex.js')
-slideshow_template = util.get_resource('slideshow.mustache').decode()
+# slideshow_template = pystache.parse(util.get_resource('slideshow.mustache').decode(), )
+
+# slideshow_template = pystache.Renderer(partials = dict(toc_node = util.get_resource('slideshow.mustache').decode()))
 
 assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
 
+
+def mustache(template_name, context):
+	class Partials:
+		@staticmethod
+		def get(name):
+			return util.get_resource(name + '.mustache').decode()
+	
+	renderer = pystache.Renderer(partials = Partials)
+	
+	return renderer.render('{{>' + template_name + '}}', context)
+	
 
 class Slide:
 	def __init__(self, title : str, level : int):
@@ -18,8 +31,8 @@ class Slide:
 
 
 class Slideshow:
-	def __init__(self, slides : list, assets : list):
-		self._slides = slides
+	def __init__(self, root_slide : Slide, assets : list):
+		self._root_slide = root_slide
 		self._assets = assets
 	
 	def write(self, dest_dir, *, link_resources : bool):
@@ -32,11 +45,22 @@ class Slideshow:
 			headers.extend(asset.header_fragment)
 			files.extend(asset.files)
 		
-		slide_contexts = [dict(content = easyxml.dump_fragment(i.body_fragment)) for i in self._slides]
-		context = dict(headers = easyxml.dump_fragment(headers), slides = slide_contexts)
+		id_counter = itertools.count(0)
+		
+		def get_slides_context(slide : Slide):
+			id = next(id_counter)
+			title = slide.title
+			nodes = list(map(get_slides_context, slide.child_slides))
+			content = easyxml.dump_fragment(slide.body_fragment)
+			
+			return dict(id = id, title = title, nodes = nodes, content = content)
+		
+		context = dict(
+			headers = easyxml.dump_fragment(headers),
+			slides = get_slides_context(self._root_slide))
 		
 		# To remove redundant namespace declarations.
-		document = easyxml.dump(easyxml.load(pystache.Renderer().render(slideshow_template, context)))
+		document = easyxml.dump(easyxml.load(mustache('slideshow', context)))
 		
 		files.append(assets.create_bytes_file('index.xhtml', lambda: document.encode()))
 		
@@ -88,15 +112,4 @@ def load_slideshow(markdown_file_path : str):
 		
 		slides_ancestry[-1].body_fragment.append(i)
 	
-	slides = []
-	
-	def walk_slides(slide : Slide):
-		if slide.level >= 0:
-			slides.append(slide)
-		
-		for i in slide.child_slides:
-			walk_slides(i)
-	
-	walk_slides(slides_ancestry[0])
-	
-	return Slideshow(slides, [assets.slidy, assets.katex, assets.pygments])
+	return Slideshow(slides_ancestry[0], [assets.upshot, assets.katex, assets.pygments])

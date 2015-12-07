@@ -22,7 +22,7 @@ class Slideshow:
 		self._slides = slides
 		self._assets = assets
 	
-	def write(self, dest_dir):
+	def write(self, dest_dir, *, link_resources : bool):
 		headers = []
 		files = []
 		
@@ -41,7 +41,7 @@ class Slideshow:
 		files.append(assets.create_bytes_file('index.xhtml', lambda: document.encode()))
 		
 		for i in files:
-			i.write_file(dest_dir)
+			i.write(dest_dir, link_file = link_resources)
 
 
 break_element_level = { x: i for i, x in enumerate([xhtml.h1, xhtml.h2, xhtml.h3, xhtml.h4, xhtml.h5, xhtml.h6, xhtml.hr]) }

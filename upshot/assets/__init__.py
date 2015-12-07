@@ -4,27 +4,75 @@ from .. import util, js
 from ..easyxml.namespaces import xhtml
 
 
-class AssetFile:
-	def __init__(self, relative_path : str, stream_factory : callable):
+class AssetFile(metaclass = abc.ABCMeta):
+	def __init__(self, *, relative_path : str):
 		self._relative_path = relative_path
-		self._stream_factory = stream_factory
 	
-	def write_file(self, dest_dir):
+	@abc.abstractmethod
+	def _write_file(self, dest_path): pass
+	
+	def _link_file(self, dest_path):
+		self._write_file(dest_path)
+	
+	def write(self, dest_dir, link_file : bool):
 		dest_path = os.path.join(dest_dir, self._relative_path)
 		dir = os.path.dirname(dest_path)
 		
 		if not os.path.exists(dir):
 			os.makedirs(dir)
 		
+		if os.path.exists(dest_path):
+			os.unlink(dest_path)
+		
+		if link_file:
+			self._link_file(dest_path)
+		else:
+			self._write_file(dest_path)
+
+
+class GeneratedAssetFile(AssetFile):
+	def __init__(self, *, stream_factory : callable, **kwargs):
+		super().__init__(**kwargs)
+		
+		self._stream_factory = stream_factory
+	
+	def _write_file(self, dest_path):
 		with self._stream_factory() as src_file, open(dest_path, 'wb') as dest_file:
 			shutil.copyfileobj(src_file, dest_file)
 
 
+class CopiedAssetFile(AssetFile):
+	def __init__(self, *, path : str, **kwargs):
+		super().__init__(**kwargs)
+		
+		self._path = path
+	
+	def _link_file(self, dest_path):
+		os.symlink(self._path, dest_path)
+	
+	def _write_file(self, dest_path):
+		shutil.copyfile(self._path, dest_path)
+
+
+class ResourceAssetFile(AssetFile):
+	def __init__(self, *, name : str, **kwargs):
+		super().__init__(**kwargs)
+		
+		self._name = name
+	
+	def _link_file(self, dest_path):
+		os.symlink(util.get_resource_path(self._name), dest_path)
+	
+	def _write_file(self, dest_path):
+		with util.get_resource_stream(self._name) as src_file, open(dest_path, 'wb') as dest_file:
+			shutil.copyfileobj(src_file, dest_file)
+
+
 def create_bytes_file(relative_path, resource_content_factory):
-	def content_factory():
+	def stream_factory():
 		return io.BytesIO(resource_content_factory())
 	
-	return AssetFile(relative_path, content_factory)
+	return GeneratedAssetFile(relative_path = relative_path, stream_factory = stream_factory)
 
 
 class Asset:
@@ -68,12 +116,11 @@ class ResourceAssetFactory(AssetFactory):
 			dest_path = os.path.join(self._dest_asset_dir, os.path.relpath(i, asset_resources_dir))
 			
 			header_elem_factory = self._header_elem_factories.get(ext)
-			content_factory = functools.partial(util.get_resource, i)
 			
 			if header_elem_factory:
 				header_fragment.append(header_elem_factory(dest_path))
 			
-			files.append(create_bytes_file(dest_path, content_factory))
+			files.append(ResourceAssetFile(relative_path = dest_path, name = i))
 		
 		return Asset(files, header_fragment)
 
@@ -85,12 +132,16 @@ class PygmentsAssetFactory(AssetFactory):
 		css_path = os.path.join(self._dest_asset_dir, self._css_file_name)
 		
 		return Asset(
-			[create_bytes_file(css_path, self._get_pygments_css)],
+			[GeneratedAssetFile(
+				relative_path = css_path,
+				stream_factory = self._get_pygments_css_stream)],
 			[_create_css_header_elem(css_path)])
 	
 	@classmethod
-	def _get_pygments_css(cls):
-		return formatters.HtmlFormatter().get_style_defs('.highlight').encode()
+	def _get_pygments_css_stream(cls):
+		content = formatters.HtmlFormatter().get_style_defs('.highlight')
+		
+		return io.BytesIO(content.encode())
 
 
 slidy = ResourceAssetFactory('slidy')

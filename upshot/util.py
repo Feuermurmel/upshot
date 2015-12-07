@@ -1,11 +1,21 @@
-import pkg_resources, inspect, os, abc
+import pkg_resources, inspect, os, abc, io
 
 
 def get_resource(name, frames_back = 0) -> bytes:
+	with get_resource_stream(name, frames_back + 1) as file:
+		return file.read()
+
+
+def get_resource_stream(name, frames_back = 0) -> io.BufferedReader:
 	module = _get_calling_module(frames_back + 1)
 	
-	with pkg_resources.resource_stream(module, name) as file:
-		return file.read()
+	return pkg_resources.resource_stream(module, name)
+
+
+def get_resource_path(name, frames_back = 0):
+	module = _get_calling_module(frames_back + 1)
+	
+	return pkg_resources.resource_filename(module, name)
 
 
 def list_resources(root_name, frames_back = 0):

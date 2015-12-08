@@ -35,18 +35,39 @@ upshot = (function () {
 		}
 	}
 	
+	function handleSlideChanged() {
+		var currentSlide = getCurrentSlide();
+		
+		if (currentSlide.length == 1) {
+			var tocElem = $('#toc-' + currentSlide.attr('id'));
+			
+			tocElem.parentsUntil('.toc', 'li').andSelf().each(function () {
+				var x = $(this);
+				
+				x.removeClass('toc-hidden');
+				x.siblings().addClass('toc-hidden');
+			});
+			
+			// Hide the children of the current slide.
+			tocElem.children('ul').children('li').addClass('toc-hidden');
+		}
+	}
+	
 	return function () {
 		$(document).on('keydown', function (e) {
 			if (e.which == keyCodes.left) {
 				gotoSlide(getCurrentSlide().prev('.slide'));
 			} else if (e.which == keyCodes.right) {
 				gotoSlide(getCurrentSlide().next('.slide'));
+			} else if (e.which == keyCodes.enter) {
+				$('body').toggleClass('slideshow');
+			} else {
+				console.log(e.which);
 			}
 		});
 		
-		$(window).on('hashchange', function () {
-			console.log(document.location.hash);
-		})
+		$(window).on('hashchange', handleSlideChanged);
+		handleSlideChanged();
 		
 		$('body').addClass('slideshow');
 	};

@@ -47,10 +47,10 @@ class Slideshow:
 		
 		id_counter = itertools.count(0)
 		
-		def get_slides_context(slide : Slide):
+		def get_slides_context(slide : Slide, fallback_title = ''):
 			id = next(id_counter)
-			title = slide.title
-			nodes = list(map(get_slides_context, slide.child_slides))
+			title = slide.title or fallback_title
+			nodes = [get_slides_context(x, '{} ({})'.format(title, i + 1)) for i, x in enumerate(slide.child_slides)]
 			content = easyxml.dump_fragment(slide.body_fragment)
 			
 			return dict(id = id, title = title, nodes = nodes, content = content)

@@ -1,27 +1,15 @@
 body {
-	margin: 0em;
 	width: 100%;
 	height: 100%;
 }
 
-div.slide {
-	z-index: 20;
-	margin: 0em;
-	padding: 0em 1em;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
-
 @media screen {
-	.slideshow .toc {
+	.slideshow .toc-hidden {
 		display: none;
 	}
 	
 	.slideshow .slide {
 		display: none;
-		position: absolute;
 	}
 	
 	.slideshow .slide:target {

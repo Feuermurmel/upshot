@@ -139,7 +139,7 @@ class PygmentsAssetFactory(AssetFactory):
 	
 	@classmethod
 	def _get_pygments_css_stream(cls):
-		content = formatters.HtmlFormatter().get_style_defs('.highlight')
+		content = formatters.HtmlFormatter(style = 'colorful').get_style_defs('.highlight')
 		
 		return io.BytesIO(content.encode())
 

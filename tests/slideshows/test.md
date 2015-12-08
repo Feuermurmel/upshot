@@ -26,43 +26,47 @@ f(x) = \int_{-\infty}^\infty
 
 ---
 
-```py
-def dump(element : Element) -> str:
-	buffer = io.BytesIO()
-	generator = xml.sax.saxutils.XMLGenerator(buffer, 'utf-8', short_empty_elements = True)
-	
-	for prefix, namespace in _iter_namespace_mappings(element):
-		generator.startPrefixMapping(prefix, namespace._uri)
-	
-	def walk(element):
-		name = _get_name_tuple(element.name)
-		attrs = collections.OrderedDict((_get_name_tuple(name), value) for name, value in sorted(element.attrs.items()))
+~~~py
+class Dump:
+	def __init__(element : Element):
+		"""Foo"""
 		
-		generator.startElementNS(name, None, attrs)
+		buffer = io.BytesIO()
+		generator = xml.sax.saxutils.XMLGenerator(buffer, 'utf-8', short_empty_elements = True)
 		
-		for i in element:
-			if isinstance(i, Element):
-				walk(i)
-			else:
-				generator.characters(i)
+		for prefix, namespace in _iter_namespace_mappings(element):
+			generator.startPrefixMapping(prefix, namespace._uri)
 		
-		generator.endElementNS(name, None)
-	
-	walk(element)
-	
-	return buffer.getvalue().decode()
-```
+		def walk(element) -> str:
+			name = _get_name_tuple(element.name)
+			attrs = collections.OrderedDict((_get_name_tuple(name), value) for name, value in sorted(element.attrs.items()))
+			
+			generator.startElementNS(name, None, attrs)
+			
+			for i in element:
+				if isinstance(i, Element):
+					walk(i)
+				else:
+					generator.characters(i)
+			
+			generator.endElementNS(name, None)
+		
+		walk(element)
+		
+		return buffer.getvalue().decode()
+~~~
 
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-```
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-```
+> 	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
+~~~
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+~~~
 
 # Title
 

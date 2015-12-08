@@ -112,4 +112,4 @@ def load_slideshow(markdown_file_path : str):
 		
 		slides_ancestry[-1].body_fragment.append(i)
 	
-	return Slideshow(slides_ancestry[0], [assets.upshot, assets.katex, assets.pygments])
+	return Slideshow(slides_ancestry[0], [assets.katex, assets.pygments, assets.upshot])

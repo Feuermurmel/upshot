@@ -18,11 +18,11 @@ f(x) = \int_{-\infty}^\infty
 	\,d\xi
 ```
 
-\[
+a \[
 f(x) = \int_{-\infty}^\infty
 	\hat f(\xi)\,e^{2 \pi i \xi x}
 	\,d\xi
-\]
+\] b
 
 ---
 
@@ -30,6 +30,10 @@ f(x) = \int_{-\infty}^\infty
 class Dump:
 	def __init__(element : Element):
 		"""Foo"""
+		
+		print('''
+			a
+		''')
 		
 		buffer = io.BytesIO()
 		generator = xml.sax.saxutils.XMLGenerator(buffer, 'utf-8', short_empty_elements = True)

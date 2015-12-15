@@ -47,3 +47,49 @@ def test_create_element_no_namespace():
 	element = name(a = '1')
 	
 	elements_check_equal(element, Element(null.foo, { null.a: '1' }))
+
+
+def test_create_element_pass_name_dict():
+	"""
+	Used to check wether this restriction has been removed: https://cuu508.wordpress.com/2011/01/27/keywords-must-be-strings/
+	"""
+	
+	attrs = { null.a: '1' }
+	
+	with pytest.raises(TypeError):
+		element = null.foo(**attrs)
+
+
+def test_create_element_attrs_dict():
+	attrs = { null.a: '1' }
+	
+	element = null.foo(attrs = attrs)
+	
+	elements_check_equal(element, Element(null.foo, { null.a: '1' }))
+
+
+def test_create_element_attrs_attr():
+	element = null.foo(attrs = '1')
+	
+	elements_check_equal(element, Element(null.foo, { null.attrs: '1' }))
+
+
+def test_create_element_attrs_attr_multiple():
+	element = null.foo(attrs = '1', b = '2')
+	
+	elements_check_equal(element, Element(null.foo, { null.attrs: '1', null.b: '2' }))
+
+
+def test_create_element_attrs_dict_attrs_attr():
+	attrs = { null.attrs: '1' }
+	
+	element = null.foo(attrs = attrs)
+	
+	elements_check_equal(element, Element(null.foo, { null.attrs: '1' }))
+
+
+def test_create_element_attrs_dict_attrs_attr_both():
+	attrs = { null.a: '1' }
+	
+	with pytest.raises(ValueError):
+		null.foo(attrs = attrs, b = '2')

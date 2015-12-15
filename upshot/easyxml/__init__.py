@@ -82,7 +82,15 @@ class Name(tuple):
 	def __str__(self):
 		return str(self.namespace) + self.id
 	
-	def __call__(self, *args, **kwargs):
+	def __call__(self, *args, attrs : dict = { }, **kwargs):
+		if isinstance(attrs, str):
+			kwargs['attrs'] = attrs
+		elif attrs:
+			if kwargs:
+				raise ValueError('Cannot pass a dict using attrs keyword arguments as well as keyword arguments directly.')
+			
+			kwargs = attrs
+		
 		return Element(self, kwargs, args)
 	
 	@property
@@ -126,7 +134,12 @@ class Element(collections.abc.MutableSequence):
 			
 			for name, value in self._attributes.items():
 				yield ' '
-				yield name
+				
+				if name.namespace == self._name.namespace:
+					yield name.id
+				else:
+					yield name
+				
 				yield '='
 				yield repr(value)
 			

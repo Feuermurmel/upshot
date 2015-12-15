@@ -3,11 +3,17 @@
 
 body {
 	margin: 0em;
+	font-family: 'Fira Sans';
+}
+
+body.slideshow {
+	font-size: 2vmax;
 }
 
 .toc {
 	color: white;
 	background-color: #22a;
+	padding: 0em 1em;
 }
 
 .toc ul {
@@ -17,16 +23,52 @@ body {
 	list-style-type: none;
 }
 
+.toc > ul {
+	padding-left: 0em;
+}
+
 .slide {
 	margin: 0em;
 	padding: 0em 1em;
+	overflow: hidden;
 	border-top-style: solid;
 	border-top-width: 2px;
 	border-top-color: #22a;
 }
 
-pre {
-	overflow: scroll;
+.code {
+	white-space: normal;
+	counter-reset: line-number;
 }
 
+.code .line {
+	display: table;
+	table-layout: fixed;
+	counter-increment: line-number;
+}
 
+.code .block {
+	display: table-cell;
+}
+			
+.code .whitespace {
+	display: inline-block;
+	width: 0px;
+}
+
+.code .content {
+	display: block;
+	white-space: pre-wrap;
+	padding-left: 3ch;
+	text-indent: -3ch;
+	line-height: 1.2em;
+}
+
+.code .line:before {
+	content: counter(line-number);
+	color: gray;
+	display: inline-block;
+	text-align: right;
+	margin-right: 2ch;
+	min-width: 5ch;
+}

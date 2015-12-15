@@ -1,6 +1,6 @@
-import os, abc, shutil, io, functools
+import os, abc, shutil, io
 from pygments import formatters
-from .. import util, js
+from .. import util
 from ..easyxml.namespaces import xhtml
 
 

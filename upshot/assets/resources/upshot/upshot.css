@@ -32,7 +32,7 @@ body {
 	display: table-cell;
 }
 
-.code .whitespace {
+.code .indentation {
 	display: inline-block;
 	width: 0px;
 }

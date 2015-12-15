@@ -96,7 +96,12 @@ def fixup_pre(elem):
 		line = []
 		
 		for wrapper, text in iter_unwrapped_fragments():
-			first, *rest = text.split('\n')
+			parts = text.split('\n')
+			
+			for i in range(len(parts) - 1):
+				parts[i] += '\n'
+			
+			first, *rest = parts
 			
 			if first:
 				line.append((wrapper, first))
@@ -139,17 +144,15 @@ def fixup_pre(elem):
 	def dump_unwrapped_fragment(fragment):
 		return easyxml.dump_fragment([wrapper(text) for wrapper, text in fragment])
 	
-	def get_line_context(line_fragment, newline):
+	def get_line_context(line_fragment):
 		indentation, content = split_indentation(line_fragment)
 		
 		return dict(
 			indentation_width = sum(len(x) for _, x in indentation),
 			indentation = dump_unwrapped_fragment(indentation),
-			content = dump_unwrapped_fragment(content),
-			line_break = '\n' if newline else '')
+			content = dump_unwrapped_fragment(content))
 	
-	line_fragments = list(iter_line_fragments())
-	line_contexts = [get_line_context(x, i < len(line_fragments) - 1) for i, x in enumerate(line_fragments)]
+	line_contexts = [get_line_context(x) for x in iter_line_fragments()]
 	
 	return easyxml.load(mustache('code', dict(lines = line_contexts)))
 

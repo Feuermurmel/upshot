@@ -60,7 +60,7 @@ upshot = (function () {
 			} else if (e.which == keyCodes.right) {
 				gotoSlide(getCurrentSlide().next('.slide'));
 			} else if (e.which == keyCodes.enter) {
-				$('body').toggleClass('slideshow');
+				$('body').toggleClass('handout').toggleClass('slideshow');
 			} else {
 				console.log(e.which);
 			}
@@ -68,7 +68,5 @@ upshot = (function () {
 		
 		$(window).on('hashchange', handleSlideChanged);
 		handleSlideChanged();
-		
-		$('body').addClass('slideshow');
 	};
 }());

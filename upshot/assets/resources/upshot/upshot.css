@@ -30,16 +30,18 @@ body {
 
 .code .block {
 	display: table-cell;
+	position: relative;
+	white-space: pre-wrap;
 }
 
 .code .indentation {
-	display: inline-block;
-	width: 0px;
+	display: block;
+	position: absolute;
+	left: 0;
 }
 
 .code .content {
 	display: block;
-	white-space: pre-wrap;
 }
 
 .code .line:before {

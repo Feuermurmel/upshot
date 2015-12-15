@@ -3,42 +3,45 @@ body {
 	height: 100%;
 }
 
-@media screen {
-	.slideshow .toc-hidden {
-		display: none;
-	}
-	
-	.slideshow .slide {
-		display: none;
-	}
-	
-	.slideshow .slide:target {
-		display: block;
-	}
+.slideshow .toc-hidden {
+	display: none;
 }
 
-@media print {
-	.hidden {
-		display: block;
-		visibility: visible
-	}
-	
-	div.toolbar {
-		display: none;
-		visibility: hidden;
-	}
-	
-	div.slidy_toc {
-		display: none;
-		visibility: hidden;
-	}
-	
-	div.background {
-		display: none;
-		visibility: hidden;
-	}
-	
-	div.slide {
-		page-break-inside: avoid;
-	}
+.slideshow .slide {
+	display: none;
+}
+
+.slideshow .slide:target {
+	display: block;
+}
+
+.slide {
+	overflow: hidden;
+}
+
+.code {
+	white-space: normal;
+}
+
+.code .line {
+	display: table;
+	table-layout: fixed;
+}
+
+.code .block {
+	display: table-cell;
+}
+
+.code .whitespace {
+	display: inline-block;
+	width: 0px;
+}
+
+.code .content {
+	display: block;
+	white-space: pre-wrap;
+}
+
+.code .line:before {
+	display: inline-block;
 }

@@ -6,30 +6,55 @@ body {
 	font-family: 'Fira Sans';
 }
 
-body.slideshow {
-	font-size: 2vmax;
+li {
+	list-style-type: none;
 }
 
-.toc {
+li:before {
+	content: "–";
+	position: absolute;
+	left: 0.7em;
+}
+
+ul {
+	position: relative;
+	padding-left: 2em;
+}
+
+body.slideshow {
+	font-size: 2vw;
+}
+
+.slideshow .toc {
 	color: white;
 	background-color: #22a;
-	padding: 0em 1em;
 }
 
-.toc ul {
+.slideshow .toc ul {
 	margin: 0em;
 	padding-top: 0.1em;
 	padding-left: 1.5em;
 	list-style-type: none;
 }
 
-.toc > ul {
+.slideshow .toc > ul {
 	padding-left: 0em;
 }
 
-.slide {
+.slideshow .toc li:before {
+	content: none;
+}
+
+.slideshow .toc h1 {
+	display: none;
+}
+
+.slide, .toc {
 	margin: 0em;
 	padding: 0em 1em;
+}
+
+.handout .slide {
 	border-top-style: solid;
 	border-top-width: 2px;
 	border-top-color: #22a;

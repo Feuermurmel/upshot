@@ -19,6 +19,40 @@ upshot = (function () {
 		tab: 9
 	};
 	
+	var slideNumberElem = null;
+	
+	function addSlideNumber() {
+		var floatElem = $('<div class="slide-number"><span class="current" /> / <span class="count" /></div>');
+		var slideCount = $('.slide').last().attr('id');
+		
+		$('.count', floatElem).text(slideCount);
+		
+		slideNumberElem = $('.current', floatElem);
+		
+		// Anchor the counter on the top-level list item so that the counter lines up with list item vertically.
+		$('.toc > ul > li:eq(0)').prepend(floatElem);
+	}
+	
+	function setSlideNumber(text) {
+		slideNumberElem.text(text);
+	}
+	
+	function registerEventListener() {
+		$(document).on('keydown', function (e) {
+			if (e.which == keyCodes.left) {
+				gotoSlide(getCurrentSlide().prev('.slide'));
+			} else if (e.which == keyCodes.right) {
+				gotoSlide(getCurrentSlide().next('.slide'));
+			} else if (e.which == keyCodes.escape) {
+				$('body').toggleClass('handout').toggleClass('slideshow');
+			} else {
+				console.log(e.which);
+			}
+		});
+		
+		$(window).on('hashchange', handleSlideChanged);
+	}
+	
 	function getCurrentSlide() {
 		var currentSlide = $(':target');
 		
@@ -51,22 +85,13 @@ upshot = (function () {
 			// Hide the children of the current slide.
 			tocElem.children('ul').children('li').addClass('toc-hidden');
 		}
+		
+		setSlideNumber(currentSlide.attr('id'));
 	}
 	
 	return function () {
-		$(document).on('keydown', function (e) {
-			if (e.which == keyCodes.left) {
-				gotoSlide(getCurrentSlide().prev('.slide'));
-			} else if (e.which == keyCodes.right) {
-				gotoSlide(getCurrentSlide().next('.slide'));
-			} else if (e.which == keyCodes.escape) {
-				$('body').toggleClass('handout').toggleClass('slideshow');
-			} else {
-				console.log(e.which);
-			}
-		});
-		
-		$(window).on('hashchange', handleSlideChanged);
+		addSlideNumber();
+		registerEventListener();
 		handleSlideChanged();
 	};
 }());

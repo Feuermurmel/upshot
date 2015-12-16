@@ -49,6 +49,14 @@ body.slideshow {
 	display: none;
 }
 
+.slide-number {
+	float: right;
+}
+
+.handout .slide-number {
+	display: none;
+}
+
 .slide, .toc {
 	margin: 0em;
 	padding: 0em 1em;

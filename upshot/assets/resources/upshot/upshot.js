@@ -59,7 +59,7 @@ upshot = (function () {
 				gotoSlide(getCurrentSlide().prev('.slide'));
 			} else if (e.which == keyCodes.right) {
 				gotoSlide(getCurrentSlide().next('.slide'));
-			} else if (e.which == keyCodes.enter) {
+			} else if (e.which == keyCodes.escape) {
 				$('body').toggleClass('handout').toggleClass('slideshow');
 			} else {
 				console.log(e.which);

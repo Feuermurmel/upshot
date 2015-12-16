@@ -37,6 +37,13 @@ upshot = (function () {
 		slideNumberElem.text(text);
 	}
 	
+	function addHelp() {
+		var help = 'Toggle slideshow mode with ESC, switch slides with LEFT and RIGHT.';
+		var elem = $('<div class="help">' + help + '</div>');
+		
+		$('body').prepend(elem);
+	}
+	
 	function registerEventListener() {
 		$(document).on('keydown', function (e) {
 			if (e.which == keyCodes.left) {
@@ -91,6 +98,7 @@ upshot = (function () {
 	
 	return function () {
 		addSlideNumber();
+		addHelp();
 		registerEventListener();
 		handleSlideChanged();
 	};

@@ -6,19 +6,31 @@ body {
 	font-family: 'Fira Sans';
 }
 
+ul, ol {
+	position: relative;
+	padding-left: 2em;
+}
+
 li {
 	list-style-type: none;
 }
 
 li:before {
-	content: "–";
 	position: absolute;
 	left: 0.7em;
 }
 
-ul {
-	position: relative;
-	padding-left: 2em;
+ul > li:before {
+	content: "–";
+}
+
+ol {
+	counter-reset: ol;
+}
+
+ol > li:before {
+	counter-increment: ol;
+	content: counter(ol) ".";
 }
 
 body.slideshow {
@@ -51,18 +63,6 @@ body.slideshow {
 	content: none;
 }
 
-.slideshow .toc h1 {
-	display: none;
-}
-
-.slide-number {
-	float: right;
-}
-
-.handout .slide-number, .slideshow .help {
-	display: none;
-}
-
 .handout .slide {
 	border-top-style: solid;
 	border-top-width: 2px;
@@ -78,15 +78,19 @@ body.slideshow {
 	line-height: 1.2em;
 }
 
-.code .content {
-	padding-left: 3ch;
-	text-indent: -3ch;
+.code .number {
+	vertical-align: top;
+	text-align: right;
+	min-width: 5ch;
 }
 
-.code .line:before {
+.code .number:before {
 	content: counter(line-number);
 	color: gray;
-	text-align: right;
 	margin-right: 2ch;
-	min-width: 5ch;
+}
+
+.code .text {
+	padding-left: 3ch;
+	text-indent: -3ch;
 }

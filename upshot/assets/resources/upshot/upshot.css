@@ -15,8 +15,20 @@ body {
 	display: block;
 }
 
-.slide {
+.slideshow .slide {
 	overflow: hidden;
+}
+
+.slideshow .toc h1 {
+	display: none;
+}
+
+.slide-number {
+	float: right;
+}
+
+.handout .slide-number, .slideshow .help {
+	display: none;
 }
 
 .code {
@@ -28,22 +40,20 @@ body {
 	table-layout: fixed;
 }
 
-.code .block {
+.code .number, .code .content {
 	display: table-cell;
+}
+
+.code .content {
 	position: relative;
 	white-space: pre-wrap;
 }
 
-.code .indentation {
-	display: block;
+.code .indent {
 	position: absolute;
 	left: 0;
 }
 
-.code .content {
-	display: block;
-}
-
-.code .line:before {
+.code .text {
 	display: inline-block;
 }

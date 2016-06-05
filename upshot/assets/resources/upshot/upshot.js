@@ -1,6 +1,6 @@
-upshot = (function () {
+var upshot = function () {
 	'use strict';
-	
+
 	var keyCodes = {
 		backspace: 8,
 		comma: 188,
@@ -18,88 +18,83 @@ upshot = (function () {
 		space: 32,
 		tab: 9
 	};
-	
-	var slideNumberElem = null;
-	
-	function addSlideNumber() {
-		var floatElem = $('<div class="slide-number"><span class="current" /> / <span class="count" /></div>');
-		var slideCount = $('.slide').last().attr('id');
-		
-		$('.count', floatElem).text(slideCount);
-		
-		slideNumberElem = $('.current', floatElem);
-		
-		// Anchor the counter on the top-level list item so that the counter lines up with list item vertically.
-		$('.toc > ul > li:eq(0)').prepend(floatElem);
-	}
-	
-	function setSlideNumber(text) {
-		slideNumberElem.text(text);
-	}
-	
-	function addHelp() {
-		var help = 'Toggle slideshow mode with ESC, switch slides with LEFT and RIGHT.';
-		var elem = $('<div class="help">' + help + '</div>');
-		
-		$('body').prepend(elem);
-	}
-	
-	function registerEventListener() {
-		$(document).on('keydown', function (e) {
-			if (e.which == keyCodes.left) {
-				gotoSlide(getCurrentSlide().prev('.slide'));
-			} else if (e.which == keyCodes.right) {
-				gotoSlide(getCurrentSlide().next('.slide'));
-			} else if (e.which == keyCodes.escape) {
-				$('body').toggleClass('handout').toggleClass('slideshow');
-			} else {
-				console.log(e.which);
-			}
-		});
-		
-		$(window).on('hashchange', handleSlideChanged);
-	}
-	
+
+	// Add help text.
+	var helpText = 'Toggle slideshow mode with ESC, switch slides with LEFT and RIGHT.';
+	var helpElem = $('<div id="help">' + helpText + '</div>');
+
+	$('body').prepend(helpElem);
+
+	var slideElems = $('.slide');
+	var firstSlideElem = slideElems.first();
+	var lastSlideElem = slideElems.last();
+	var tocElem = $('#toc');
+
+	// Set an ID to allow styling.
+	var slideNumberFloatElem = $('<div id="slide-number"><a href="#toc"><span/> / <span/></a></div>');
+	var slideNumberElem = $('span:eq(0)', slideNumberFloatElem);
+	var slideCountElem = $('span:eq(1)', slideNumberFloatElem);
+
+	tocElem.prepend(slideNumberFloatElem);
+
+	// Set slide count.
+	slideCountElem.text(lastSlideElem.attr('id'));
+
 	function getCurrentSlide() {
-		var currentSlide = $(':target');
-		
-		if (currentSlide.length != 1) {
-			currentSlide = $('.slide').first();
-		}
-		
-		return currentSlide;
+		return $('.slide:target');
 	}
-	
+
 	function gotoSlide(slideElem) {
-		if (slideElem.length == 1) {
-			window.location.replace('#' + slideElem.attr('id'));
+		if (slideElem.length !== 1) {
+			slideElem = firstSlideElem;
 		}
+
+		var id = slideElem.attr('id');
+
+		// Set hash (which shows/jumps to the right .slide element).
+		window.location.replace('#' + id);
 	}
-	
+
+	function toggleSlideshowMode() {
+		$('body').toggleClass('handout').toggleClass('slideshow');
+	}
+
+	$(document).on('keydown', function (e) {
+		if (e.which === keyCodes.left) {
+			gotoSlide(getCurrentSlide().prev('.slide'));
+		} else if (e.which === keyCodes.right) {
+			gotoSlide(getCurrentSlide().next('.slide'));
+		} else if (e.which === keyCodes.escape) {
+			toggleSlideshowMode();
+
+			// Go to the first slide, if none is selected already.
+			gotoSlide(getCurrentSlide());
+		}
+	});
+
 	function handleSlideChanged() {
-		var currentSlide = getCurrentSlide();
-		
-		if (currentSlide.length == 1) {
-			var tocElem = $('#toc-' + currentSlide.attr('id'));
-			
-			tocElem.parentsUntil('.toc', 'li').andSelf().each(function () {
+		var slideElem = getCurrentSlide();
+
+		if (slideElem.length === 1) {
+			var id = slideElem.attr('id');
+			var tocListElem = $('#toc-' + id);
+
+			// Show/hide toc elements.
+			tocListElem.parentsUntil('#toc', 'li').andSelf().each(function () {
 				var x = $(this);
-				
-				x.removeClass('toc-hidden');
-				x.siblings().addClass('toc-hidden');
+
+				x.removeClass('hidden');
+				x.siblings().addClass('hidden');
 			});
-			
+
 			// Hide the children of the current slide.
-			tocElem.children('ul').children('li').addClass('toc-hidden');
+			tocListElem.children('ul').children('li').addClass('hidden');
+
+			// Set slide number.
+			slideNumberElem.text(id);
 		}
-		
-		setSlideNumber(currentSlide.attr('id'));
 	}
-	
-	return function () {
-		addSlideNumber();
-		addHelp();
-		registerEventListener();
-		handleSlideChanged();
-	};
-}());
+
+	$(window).on('hashchange', handleSlideChanged);
+	handleSlideChanged();
+};

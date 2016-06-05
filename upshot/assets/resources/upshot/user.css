@@ -2,8 +2,21 @@
 @import url('DejaVuSansMono/font.css');
 
 body {
-	margin: 0em;
-	font-family: 'Fira Sans';
+	margin: 0;
+	font-family: 'Fira Sans', sans-serif;
+}
+
+a, a:visited {
+	color: blue;
+	text-decoration: none;
+}
+
+a:active {
+	color: red;
+}
+
+a:hover {
+	text-decoration: underline;
 }
 
 ul, ol {
@@ -33,40 +46,47 @@ ol > li:before {
 	content: counter(ol) ".";
 }
 
-body.slideshow {
+.slideshow {
 	font-size: 2vw;
 }
 
-.slide, .toc, .help {
-	margin: 0em;
-	padding: 0em 1em;
+.slide, #toc, #help {
+	margin: 0;
+	padding: 0 1em;
 }
 
-.slideshow .toc, .help {
+.slideshow #toc, #help {
 	color: white;
 	background-color: #22a;
 	padding-top: 0.2em;
 	padding-bottom: 0.2em;
 }
 
-.slideshow .toc ul {
-	margin: 0em;
+.slideshow #toc a {
+	color: white;
+}
+
+.slideshow #toc ul {
+	margin: 0;
 	padding-left: 1.5em;
 	list-style-type: none;
 }
 
-.slideshow .toc > ul {
-	padding-left: 0em;
+.slideshow #toc > ul {
+	padding-left: 0;
 }
 
-.slideshow .toc li:before {
+.slideshow #toc li:before {
 	content: none;
 }
 
 .handout .slide {
-	border-top-style: solid;
-	border-top-width: 2px;
-	border-top-color: #22a;
+	border-top: 2px solid #22a;
+}
+
+code, pre {
+	font-family: 'DejaVu Sans Mono', monospace;
+	font-size: 0.9em;
 }
 
 .code {

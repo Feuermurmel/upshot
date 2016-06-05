@@ -3,31 +3,47 @@ body {
 	height: 100%;
 }
 
-.slideshow .toc-hidden {
-	display: none;
-}
-
 .slideshow .slide {
 	display: none;
 }
 
 .slideshow .slide:target {
+	/* Show current slide. */
 	display: block;
 }
 
 .slideshow .slide {
+	/* Hide other slides. */
 	overflow: hidden;
 }
 
-.slideshow .toc h1 {
+.slideshow #toc h1 {
+	/* Hide "Contents" title in TOC in slideshow mode. */
 	display: none;
 }
 
-.slide-number {
-	float: right;
+.slideshow #toc .hidden {
+	/* Only hide TOC elements in slideshow mode. */
+	display: none;
 }
 
-.handout .slide-number, .slideshow .help {
+.slideshow #toc:target .hidden {
+	/* ... unless we are currently showing the full TOC. */
+	display: block;
+}
+
+.slideshow #toc:target #slide-number {
+	/* Hide slide number when showing full TOC. */
+	display: none;
+}
+
+#slide-number {
+	float: right;
+	position: relative;
+	z-index: 1;
+}
+
+.handout #slide-number, .slideshow #help {
 	display: none;
 }
 
